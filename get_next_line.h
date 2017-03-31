@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okosiako <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: okosiako <okosiako@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/23 14:21:11 by okosiako          #+#    #+#             */
-/*   Updated: 2017/02/13 12:18:24 by okosiako         ###   ########.fr       */
+/*   Updated: 2017/03/31 16:45:28 by okosiako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include "libft/libft.h"
-# define BUFF_SIZE 100000000
+# define BUFF_SIZE 10
 
 typedef struct			s_descript
 {

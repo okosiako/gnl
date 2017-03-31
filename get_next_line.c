@@ -3,28 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: okosiako <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: okosiako <okosiako@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/28 15:26:35 by okosiako          #+#    #+#             */
-/*   Updated: 2016/12/30 12:43:09 by okosiako         ###   ########.fr       */
+/*   Updated: 2017/03/31 17:32:53 by okosiako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdbool.h>
 
-void		change_list(t_descript *list)
+bool		change_list(t_descript *list, char **line)
 {
 	char	*temp;
+	size_t	len;
 
 	temp = list->buff;
-	if (ft_strchr(temp, '\n'))
-		list->buff = ft_strsub(temp, ft_strchr(temp, '\n') - temp + 1,
-				(size_t)(ft_strlen(list->buff) - (ft_strchr(temp, '\n') - temp)
-					+ 1));
+	len = ft_strchr(temp, '\n') ? ft_strchr(temp, '\n') - temp : 0;
+	*line = ft_strsub(temp, 0, len ? len : ft_strlen(temp));
+	list->buff = ft_strdup(&temp[len ? len + 1 : ft_strlen(temp)]);
 	ft_memdel((void **)&temp);
+	return (len ? true : false);
 }
 
-void		add_list(t_descript **memory, char *str, int fd)
+void		add_list(t_descript **memory, const char *str, const int fd)
 {
 	t_descript *temp;
 
@@ -37,7 +39,7 @@ void		add_list(t_descript **memory, char *str, int fd)
 	*memory = temp;
 }
 
-t_descript	*was(t_descript *list, int fd)
+t_descript	*was(t_descript *list, const int fd)
 {
 	while (list)
 	{
@@ -48,7 +50,7 @@ t_descript	*was(t_descript *list, int fd)
 	return (0);
 }
 
-int			smt(int fd, char **line, t_descript **memory)
+/*int			smt(int fd, char **line, t_descript **memory)
 {
 	char		b[BUFF_SIZE + 1];
 	int			ret;
@@ -76,30 +78,32 @@ int			smt(int fd, char **line, t_descript **memory)
 	}
 	return ((*line[0]) ? 1 : 0);
 }
-
+*/
 int			get_next_line(const int fd, char **line)
 {
-	char				b[BUFF_SIZE + 1];
+	static t_descript	*memory;
+	char				*b;
 	char				*ta[2];
 	t_descript			*temp;
-	static t_descript	*memory = NULL;
+	bool				get_a_line;
 
-	if (!line || (read(fd, b, 0)) || BUFF_SIZE < 1)
+	if (!line || BUFF_SIZE < 1 || (read(fd, (b = ft_strnew(BUFF_SIZE)), 0)))
 		return (-1);
+	get_a_line = false;
 	*line = ft_strnew(0);
 	if ((temp = was(memory, fd)) && temp->buff)
+		get_a_line = change_list(temp, line);
+	while (!get_a_line && read(fd, b, BUFF_SIZE))
 	{
 		ta[0] = *line;
-		if (ft_strchr(temp->buff, '\n'))
+		*line = ft_strjoin(ta[0], b);
+		ft_strdel(&ta[0]);
+		if (ft_strchr(b, '\n'))
 		{
-			*line = ft_strjoin(ta[0], ft_strsub(temp->buff, 0,
-						ft_strchr(temp->buff, '\n') - temp->buff));
-			change_list(temp);
-			ft_memdel((void **)&ta[0]);
-			return (1);
+			*line[ft_strchr((*line), '\n') - (*line)] = '\0';
+			temp ? temp->buff = ft_strdup(&b[ft_strchr(b, '\n') - b + 1]) :
+				add_list(&memory, &b[ft_strchr(b, '\n') - b + 1], fd);
 		}
-		*line = ft_strjoin(ta[0], temp->buff);
-		ft_memdel((void **)&temp->buff);
 	}
-	return (smt(fd, line, &memory));
+	return (**line ? 1 : 0);
 }
