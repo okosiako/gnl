@@ -6,7 +6,7 @@
 /*   By: okosiako <okosiako@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/23 14:21:11 by okosiako          #+#    #+#             */
-/*   Updated: 2017/03/31 16:45:28 by okosiako         ###   ########.fr       */
+/*   Updated: 2017/04/01 17:11:58 by okosiako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include "libft/libft.h"
-# define BUFF_SIZE 10
+# define BUFF_SIZE 100
 
 typedef struct			s_descript
 {
